@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Personal - Start Bootstrap Theme</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" />
+        <!-- Custom Google font-->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+    </head>
+    <body class="d-flex flex-column h-100">
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            {% include 'navbar.html' %}
+            <!-- Header-->
+            {% block content %}
+
+            {% endblock %}
+        <!-- Footer-->
+        {% include 'footer.html' %}
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+        <!-- Login Modal-->
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <label for="username">Username</label>
+                      <input type="text" class="form-control" id="username" name="username" required placeholder="Enter your username">
+                    </div>
+                    <div class="form-group">
+                      <label for="password">Password</label>
+                      <input type="password" class="form-control" id="password" name="password" required placeholder="Enter your password">
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Login</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Check if user is already logged in
+    // $.get("/login", function(data) {
+    //     if (data === 'success') {
+    //         alert('User is already logged in');
+    //         window.location.href = '/webapp';
+    //     }
+    // });
+
+    $(".btn-primary").click(function(event) {           
+
+        var username = $("#username").val();
+        var password = $("#password").val();
+
+        // Form validation
+        if (username === '' || password === '') {
+            alert('Username and password are required');
+            $("#username").val('');
+            $("#password").val('');
+
+            return; // Stop the function if the inputs are not valid
+        }
+
+        $.ajax({
+            url: '/login',
+            method: 'POST',
+            data: {username: username, password: password},
+            success: function(data) {
+                if(data === 'success'){
+                    console.log(data);
+                    // Close the modal and refresh the page or redirect
+                    $("#loginModal").modal('hide');
+                    alert('Successfully logged in');
+                    window.location.href = '/upload';
+                } else {
+                    alert('Invalid username or password');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Login request failed');
+                // clear the form
+                $("#username").val('');
+                $("#password").val('');
+            }
+        });
+    });
+});
+</script>
+        
+    </body>
+</html>

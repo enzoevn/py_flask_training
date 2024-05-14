@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="mb-5">Welcome, {% if current_user.is_authenticated %}{{ current_user.name }}{% else %}Guest{% endif %}!</h1>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">Upload Image</h2>
+                <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="file" name="image" class="form-control-file">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">Uploaded Images</h2>
+                <div class="image-grid"></div>
+                {% for image in images %}
+                    <div class="mb-3">
+                        <img src="{{ url_for('uploaded_file', filename='uploads/' + image) }}" alt="{{ image }}" class="img-thumbnail">
+                        <form action="{{ url_for('delete_file', filename=image) }}" method="post" class="d-inline-block">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                        <form action="{{ url_for('send_to_api', filename=image) }}" method="post" class="d-inline-block">
+                            <button type="submit" class="btn btn-success">Send to API</button>
+                        </form>
+                        <!-- Display the API response -->
+                        {% if session[image] %}
+                            <p class="mt-2">{{ session[image] }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">API Data</h2>
+                <p class="card-text">{{ data }}</p>  <!-- Display the data -->
+            </div>
+        </div>
+
+        <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
